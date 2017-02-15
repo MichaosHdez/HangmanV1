@@ -11,7 +11,7 @@ answer = rando_word.split('')
 # Answer status the user can see
 secret_word = []
 # Set the right amount of "-"s for the user to see
-answer.length.times do |_i|
+answer.length.times do
     secret_word << '-'
 end
 # set the letters guessed list container
@@ -19,25 +19,53 @@ guessed_letters = []
 # set remaining number of guesses
 guesses = 6
 # create a method to check if guessed letter is in the answer
-def guess_checker(answer_arr, guess, secret_arr)
-    counter = 0
-    initial_secret_array = secret_arr
-    for let in answer_arr
-        secret_arr[counter] = let if let == guess
-        counter += 1
-    end
-    if secret_arr == initial_secret_array
-        puts 'Wrong!'
-    else
-        puts 'Correct!'
-    end
-end
+# def guess_checker(answer_arr, guess, secret_arr)
+#
+# end
 puts 'Welcome to the hangman games'
 
 until guesses == 0 || answer == secret_word
-  puts "You've used the following letters #{guessed_letters.join(', ')}" unless guessed_letters.empty?
-  puts "You have #{guesses} guesses left, pick a letter"
-  guess = gets.chomp.downcase
+    puts "You've used the following letters #{guessed_letters.join(', ')}" unless guessed_letters.empty?
+    puts "You have #{guesses} guesses left, pick a letter"
+    puts secret_word.join(',')
+    guess = gets.chomp.downcase
+    counter = 0
+    initial_secret = []
+    initial_secret.replace(secret_word)
+    for let in answer
+        secret_word[counter] = let if let == guess
+        counter += 1
+    end
 
-  break
+    if secret_word == initial_secret
+        guesses -= 1
+        guessed_letters << guess
+        puts 'Wrong!'
+    else
+        guessed_letters << guess
+        puts 'Correct!'
+    end
+  end
+if guesses == 0
+    'You lose, GG'
+elsif answer == secret_word
+    puts running_man
+    puts "You've won the internet"
+end
+
+def running_man
+    place = 0
+
+    head = '   O   '
+    arms = '  \|/  '
+    legs = '   /\  '
+
+    10.times do
+        puts head
+        puts arms
+        puts legs
+        head.prepend('---')
+        arms.prepend('---')
+        legs.prepend('---')
+    end
 end
