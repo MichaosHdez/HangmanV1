@@ -1,28 +1,18 @@
 require 'open-uri'
-# API call to LI words list
 words = open('http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words')
 res_bod = words.read
-# Format words into array
 list_of_words = res_bod.split(' ')
-# Set secret word
+
 rando_word = list_of_words[rand(0..list_of_words.length)]
-# Answer into array for easy checks
 answer = rando_word.split('')
-# Answer status the user can see
+
 secret_word = []
-# Set the right amount of "-"s for the user to see
 answer.length.times do
     secret_word << '_'
 end
-# set the letters guessed list container
+
 guessed_letters = []
-# set remaining number of guesses
 guesses = 6
-# create a method to check if guessed letter is in the answer
-# def guess_checker(answer_arr, guess, secret_arr)
-#
-# end
-puts 'Welcome to the hangman games'
 
 def running_man
     head = '  \O/  '
@@ -69,6 +59,8 @@ def hanging_man(guess_count)
     end
 end
 
+puts 'Welcome to the hangman games'
+
 until guesses == 0 || answer == secret_word
     puts "Incorrect guesses: #{guessed_letters.join(', ')}" unless guessed_letters.empty?
     puts "You have #{guesses} guesses left, pick a letter"
@@ -97,6 +89,7 @@ until guesses == 0 || answer == secret_word
     end
 end
 if guesses == 0
+    puts "The word was #{answer.join('')}, maybe next time!"
     puts 'GAME OVER'
 elsif answer == secret_word
     running_man
