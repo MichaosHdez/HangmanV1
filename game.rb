@@ -1,97 +1,67 @@
 require 'open-uri'
-words = open('http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words')
+require './visual.rb'
+require 'csv'
+
+config = CSV.read('./settings.conf')
+
+username = config[0][0]
+difficulty = config[0][1].to_i
+mode = config[0][2]
+start = rand(1..162_402)
+
+if mode == 'word' && difficulty == 0
+    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&count=1")
+elsif mode == 'phrase' && difficulty == 0
+    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&count=3")
+elsif mode == 'word'
+    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&difficulty=#{difficulty}")
+else
+    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&difficulty=#{difficulty}&&count=#{difficulty}")
+end
 res_bod = words.read
-list_of_words = res_bod.split(' ')
+answer = res_bod.split(' ').join(' ')
 
-rando_word = list_of_words[rand(0..list_of_words.length)]
-answer = rando_word.split('')
+def hangman_game(answer)
+    secret_word = secret_visual(answer)
+    guessed_letters = []
+    guesses = 6
 
-secret_word = []
-answer.length.times do
-    secret_word << '_'
-end
+    puts 'Welcome to the hangman games'
 
-guessed_letters = []
-guesses = 6
+    until guesses == 0 || answer == secret_word
+        puts "Incorrect guesses: #{guessed_letters.join(', ')}" unless guessed_letters.empty?
+        puts "You have #{guesses} guesses left, pick a letter"
+        puts secret_word
+        guess = gets.chomp.downcase
+        counter = 0
+        initial_secret = ''
+        initial_secret.replace(secret_word)
+        if guess == answer
+            secret_word.replace(answer)
+        else
+            answer.each_char do |letter|
+                secret_word[counter] = letter if letter == guess
+                counter += 1
+            end
+        end
 
-def running_man
-    head = '  \O/  '
-    arms = '   |   '
-    legs = '  / \  '
-
-    40.times do
-        puts head
-        puts arms
-        puts legs
-        head.prepend('---')
-        arms.prepend('---')
-        legs.prepend('---')
-        sleep 0.05
-    end
-end
-
-def hanging_man(guess_count)
-    if guess_count == 5
-        puts 'Wrong!'
-        puts '  0  '
-    elsif guess_count == 4
-        puts 'Wrong!'
-        puts '  0  '
-        puts '  |  '
-    elsif guess_count == 3
-        puts 'Wrong!'
-        puts '  0  '
-        puts ' /|  '
-    elsif guess_count == 2
-        puts 'Wrong!'
-        puts '  0  '
-        puts ' /|\ '
-    elsif guess_count == 1
-        puts 'Wrong!'
-        puts '  0  '
-        puts ' /|\ '
-        puts ' /   '
-    else
-        puts ' Dead '
-        puts '  0  '
-        puts ' /|\ '
-        puts ' / \ '
-    end
-end
-
-puts 'Welcome to the hangman games'
-
-until guesses == 0 || answer == secret_word
-    puts "Incorrect guesses: #{guessed_letters.join(', ')}" unless guessed_letters.empty?
-    puts "You have #{guesses} guesses left, pick a letter"
-    puts secret_word.join('')
-    guess = gets.chomp.downcase
-    counter = 0
-    initial_secret = []
-    initial_secret.replace(secret_word)
-    if guess == answer.join('')
-        secret_word.replace(answer)
-    else
-        for let in answer
-            secret_word[counter] = let if let == guess
-            counter += 1
+        if guessed_letters.include?(guess) || initial_secret.include?(guess)
+            puts "You've already guessed that letter!"
+        elsif secret_word == initial_secret
+            guesses -= 1
+            guessed_letters << guess
+            hanging_man(guesses)
+        else
+            puts 'Correct!'
         end
     end
-
-    if guessed_letters.include?(guess) || secret_word.include?(guess)
-        puts "You've already guessed that letter!"
-    elsif secret_word == initial_secret
-        guesses -= 1
-        guessed_letters << guess
-        hanging_man(guesses)
-    else
-        puts 'Correct!'
+    if guesses == 0
+        puts "The answer was #{answer}, maybe next time!"
+        puts 'GAME OVER'
+    elsif answer == secret_word
+        running_man
+        puts "You've won the internet"
     end
 end
-if guesses == 0
-    puts "The word was #{answer.join('')}, maybe next time!"
-    puts 'GAME OVER'
-elsif answer == secret_word
-    running_man
-    puts "You've won the internet"
-end
+
+hangman_game(answer)
