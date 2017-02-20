@@ -1,25 +1,8 @@
-require 'open-uri'
 require './visual.rb'
-require 'csv'
+require './word_gen.rb'
 
-config = CSV.read('./settings.conf')
-
-username = config[0][0]
-difficulty = config[0][1].to_i
-mode = config[0][2]
-start = rand(1..162_402)
-
-if mode == 'word' && difficulty == 0
-    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&count=1")
-elsif mode == 'phrase' && difficulty == 0
-    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&count=3")
-elsif mode == 'word'
-    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&difficulty=#{difficulty}")
-else
-    words = open("http://linkedin-reach.hagbpyjegb.us-west-2.elasticbeanstalk.com/words?start=#{start}&&difficulty=#{difficulty}&&count=#{difficulty}")
-end
-res_bod = words.read
-answer = res_bod.split(' ').join(' ')
+answer = gen_word
+p answer
 
 def hangman_game(answer)
     secret_word = secret_visual(answer)
