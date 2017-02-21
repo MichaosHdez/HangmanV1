@@ -16,23 +16,20 @@ def running_man
 end
 
 def hanging_man(guess_count)
-    if guess_count == 5
-        puts 'Wrong!'
+    if guess_count == 6
+        puts ''
+    elsif guess_count == 5
         puts '  0  '
     elsif guess_count == 4
-        puts 'Wrong!'
         puts '  0  '
         puts '  |  '
     elsif guess_count == 3
-        puts 'Wrong!'
         puts '  0  '
         puts ' /|  '
     elsif guess_count == 2
-        puts 'Wrong!'
         puts '  0  '
         puts ' /|\ '
     elsif guess_count == 1
-        puts 'Wrong!'
         puts '  0  '
         puts ' /|\ '
         puts ' /   '

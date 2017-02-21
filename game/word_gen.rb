@@ -1,8 +1,8 @@
 require 'open-uri'
-require 'csv'
+require "csv"
 
 def gen_word
-  config = CSV.read('./settings.conf')
+  config = CSV.read('game/settings.conf')
   # username = config[0][0]
   difficulty = config[0][1].to_i
   mode = config[0][2]

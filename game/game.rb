@@ -1,10 +1,8 @@
-require './visual.rb'
-require './word_gen.rb'
+require_relative 'visual'
+require_relative 'word_gen'
 
-answer = gen_word
-p answer
-
-def hangman_game(answer)
+def hangman_game
+    answer = gen_word
     secret_word = secret_visual(answer)
     guessed_letters = []
     guesses = 6
@@ -15,10 +13,12 @@ def hangman_game(answer)
         puts "Incorrect guesses: #{guessed_letters.join(', ')}" unless guessed_letters.empty?
         puts "You have #{guesses} guesses left, pick a letter"
         puts secret_word
+
         guess = gets.chomp.downcase
         counter = 0
         initial_secret = ''
         initial_secret.replace(secret_word)
+
         if guess == answer
             secret_word.replace(answer)
         else
@@ -29,15 +29,18 @@ def hangman_game(answer)
         end
 
         if guessed_letters.include?(guess) || initial_secret.include?(guess)
+            hanging_man(guesses)
             puts "You've already guessed that letter!"
         elsif secret_word == initial_secret
             guesses -= 1
             guessed_letters << guess
             hanging_man(guesses)
         else
+            hanging_man(guesses)
             puts 'Correct!'
         end
     end
+
     if guesses == 0
         puts "The answer was #{answer}, maybe next time!"
         puts 'GAME OVER'
@@ -46,5 +49,3 @@ def hangman_game(answer)
         puts "You've won the internet"
     end
 end
-
-hangman_game(answer)
