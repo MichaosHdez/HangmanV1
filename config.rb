@@ -1,7 +1,7 @@
 require 'csv'
 
 puts 'Enter desired username'
-username = gets.chomp.upcase
+username = gets.chomp.upcase.strip
 username = 'RANDO' if username.empty?
 
 puts 'Select desired word difficulty level: 1-10'
